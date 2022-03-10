@@ -1,14 +1,8 @@
 import ReactDOM from 'react-dom';
-import App from './App';
+import StopwatchApp from './components/stopwatchApp';
 import './index.css';
 
-const state = {
-    timer: 0,
-    stopwatchButton: false,
-    resetButton: false
-}
-
 ReactDOM.render(
-    <App />,
+    <StopwatchApp time={0} timerId={undefined} timeList={[]}/>,
     document.getElementById('root')
 );
