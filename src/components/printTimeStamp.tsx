@@ -4,7 +4,7 @@ interface State {
     text: string;
 }
 
-class PrintTime extends Component<State> {
+class PrintTimeStamp extends Component<State> {
     public readonly state: State = {
         text: this.props.text
     }
@@ -17,4 +17,4 @@ class PrintTime extends Component<State> {
     }
 }
 
-export default PrintTime;
+export default PrintTimeStamp;

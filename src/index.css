@@ -19,7 +19,7 @@ body {
         2px 2px 1px rgb(190, 117, 154);
 }
 
-#timer {
+.timer {
     font-size: 30px;
     font-weight: lighter;
 }
@@ -40,6 +40,15 @@ body {
     box-shadow: 1px 1px 1px rgb(92, 54, 128),
         2px 2px 1px rgb(124, 105, 144);
     cursor: pointer;
+}
+
+#start::after {
+    content: "Start";
+}
+
+#stop::after {
+    content: "Stop";
+
 }
 
 #timeList {

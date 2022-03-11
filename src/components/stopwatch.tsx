@@ -1,5 +1,6 @@
+import ReactDOM from 'react-dom';
 import { Component } from 'react';
-import PrintTime from './printTime';
+import PrintTime from './printTimeStamp';
 
 interface State {
   time: number;
@@ -20,7 +21,6 @@ class Stopwatch extends Component<Props, State> {
   }
 
   componentDidMount() {
-
   }
 
   componentWillUnmount() {
