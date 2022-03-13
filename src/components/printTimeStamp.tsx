@@ -1,17 +1,21 @@
 import { Component} from 'react';
 
-interface State {
+interface Props {
     text: string;
 }
 
-class PrintTimeStamp extends Component<State> {
-    public readonly state: State = {
-        text: this.props.text
+interface State {
+}
+
+class PrintTimeStamp extends Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
     }
+
     render() {
         return ( 
             <div>
-                <p>✔ {this.state.text}</p>
+                <span className="timeStamp">✔ {this.props.text}</span>
             </div>
         );
     }

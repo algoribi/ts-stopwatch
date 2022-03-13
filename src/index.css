@@ -33,6 +33,7 @@ body {
 .button {
     font-size: 18px;
     margin-left: 15px;
+    margin-bottom: 15px;
     background-color: rgb(203, 183, 235);
     border-radius: 7px;
     width: 100px;
@@ -51,9 +52,9 @@ body {
 
 }
 
-#timeList {
+.timeStamp {
     color: rgb(90, 25, 58);
-    margin-top: 40px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;

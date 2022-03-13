@@ -2,12 +2,19 @@ import { Component } from "react";
 import PrintTimeStamp from "./printTimeStamp";
 import Stopwatch2 from "./stopwatch2";
 
+// TODO
+// 리셋 버튼 구현
+// 리셋 전에는 이전 시간 기억하는 거
+// Stopwatch2.tsx -> 이름변경
+// 초단위 좀 더 정확하게 계산하기..(뭔가..이상함...)
+
 interface Props {
 };
 
 interface State {
     timeStampList : string[];
-    toggleButton : boolean;
+    toggleButton: boolean;
+    timerText: JSX.Element;
 }
 
 class App extends Component<Props, State> {
@@ -18,30 +25,20 @@ class App extends Component<Props, State> {
         super(props);
         this.state = {
             timeStampList : [],
-            toggleButton : false,
+            toggleButton: false,
+            timerText: <h3 className="timer">0min 0sec 0ms</h3>
         }
     }
 
     toggleButton = () => {
-        this.setState({ toggleButton: (this.state.toggleButton ? false : true) });
-    }
-    
-    setTimer = () => {
-        if (this.startTime === 0) {
-            this.startTime = -1;
-            return <h3 className="timer">0min 0sec 0msec</h3>
-        }
-
-        if (this.state.toggleButton) { // true : stop
-            this.startTime = Date.now();
-            return <Stopwatch2 />
-        } else { // false : start
+        if (this.state.toggleButton) {
             const { minute, second, millisecond } = this.convertText(Date.now() - this.startTime);
-                
-            const newTimeStampList = [...this.state.timeStampList, `${minute}min ${second}sec ${millisecond}msec`];
-            this.setState({ timeStampList: newTimeStampList });
-
-            return <h3 className="timer">{minute}min {second}sec {millisecond}msec</h3>
+            const newTimeStampList = [...this.state.timeStampList, `${minute}min ${second}sec ${millisecond}ms`];
+            this.setState({ timeStampList: newTimeStampList, toggleButton: false, timerText: <h3 className="timer">{minute}min {second}sec {millisecond}ms</h3> });
+            console.log(this.state.timeStampList);
+        } else {
+            this.startTime = Date.now();
+            this.setState({ toggleButton: true, timerText: <Stopwatch2 /> });
         }
     }
 
@@ -57,13 +54,13 @@ class App extends Component<Props, State> {
         return (
             <div id="App">
                 <h1 id="title_name">⏱MY STOPWATCH</h1>
-                {this.setTimer()}
+                {this.state.timerText}
                 <div id="div-button">
                     <button className="button" id={this.state.toggleButton ? "stop" : "start"} onClick={this.toggleButton}></button>
                     {/* <button className="button" onClick={this.resetButton}>Reset</button> */}
-                    {this.state.timeStampList.map(item => {
-                        <PrintTimeStamp text={item} />
-                    })}
+                    {this.state.timeStampList.map(item => (
+                        <PrintTimeStamp text={item} key={item} />
+                    ))}
                 </div>
             </div>
         );
