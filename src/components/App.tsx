@@ -1,12 +1,6 @@
 import { Component } from "react";
 import PrintTimeStamp from "./printTimeStamp";
-import Stopwatch2 from "./stopwatch2";
-
-// TODO
-// 리셋 버튼 구현
-// 리셋 전에는 이전 시간 기억하는 거
-// Stopwatch2.tsx -> 이름변경
-// 초단위 좀 더 정확하게 계산하기..(뭔가..이상함...)
+import Stopwatch from "./stopwatch";
 
 interface Props {
 };
@@ -19,45 +13,56 @@ interface State {
 
 class App extends Component<Props, State> {
     private startTime : number = 0;
-    private rememberTime : number = 0; // reset 하기 전 이전 시간 기억
+    private rememberTime : number = 0;
 
     constructor(props : Props) {
         super(props);
         this.state = {
             timeStampList : [],
             toggleButton: false,
-            timerText: <h3 className="timer">0min 0sec 0ms</h3>
+            timerText: <table className="timer"><td className="td-number">0</td> <td className="td-string">min</td> <td className="td-number">0</td> <td className="td-string">sec</td> <td className="td-number">0</td> <td className="td-string">ms</td></table>
         }
     }
 
     toggleButton = () => {
         if (this.state.toggleButton) {
-            const { minute, second, millisecond } = this.convertText(Date.now() - this.startTime);
+            const { minute, second, millisecond } = this.convertText(Date.now() - this.startTime + this.rememberTime);
             const newTimeStampList = [...this.state.timeStampList, `${minute}min ${second}sec ${millisecond}ms`];
-            this.setState({ timeStampList: newTimeStampList, toggleButton: false, timerText: <h3 className="timer">{minute}min {second}sec {millisecond}ms</h3> });
-            console.log(this.state.timeStampList);
+            this.setState({ timeStampList: newTimeStampList, toggleButton: false, timerText: <table className="timer"><td className="td-number">{minute}</td> <td className="td-string">min</td> <td className="td-number">{second}</td> <td className="td-string">sec</td> <td className="td-number">{millisecond}</td> <td className="td-string">ms</td></table> });
         } else {
             this.startTime = Date.now();
-            this.setState({ toggleButton: true, timerText: <Stopwatch2 /> });
+            this.setState({ toggleButton: true, timerText: <Stopwatch lastTime={this.rememberTime}/> });
         }
     }
 
-    convertText = (time : number) => {
-        const minute : string = Math.floor((time % 3600000) / 60000).toString();
-        const second: string = Math.floor(((time % 3600000) % 60000) / 1000).toString();
-        const millisecond : string = Math.floor((((time % 3600000) % 60000) % 1000) / 10).toString();
+    convertText = (time: number) => {
+        this.rememberTime = time;
+
+        const minute : string = Math.floor((time / (1000 * 60)) % 60).toString();
+        const second: string = Math.floor((time / 1000) % 60).toString();
+        const millisecond : string = Math.floor((time % 1000) * 0.1).toString();
         
         return { minute, second, millisecond };
+    }
+
+    resetButton = () => {
+        this.startTime = 0;
+        this.rememberTime = 0;
+        this.setState({
+            timeStampList : [],
+            toggleButton: false,
+            timerText: <table className="timer"><td className="td-number">0</td> <td className="td-string">min</td> <td className="td-number">0</td> <td className="td-string">sec</td> <td className="td-number">0</td> <td className="td-string">ms</td></table>
+        });
     }
 
     render() {
         return (
             <div id="App">
                 <h1 id="title_name">⏱MY STOPWATCH</h1>
-                {this.state.timerText}
+                <div id="timer-box">{this.state.timerText}</div>
                 <div id="div-button">
                     <button className="button" id={this.state.toggleButton ? "stop" : "start"} onClick={this.toggleButton}></button>
-                    {/* <button className="button" onClick={this.resetButton}>Reset</button> */}
+                    <button className="button" onClick={this.resetButton}>Reset</button>
                     {this.state.timeStampList.map(item => (
                         <PrintTimeStamp text={item} key={item} />
                     ))}

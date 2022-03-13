@@ -1,13 +1,13 @@
-import ReactDOM from 'react-dom';
 import { Component } from 'react';
-import PrintTime from './printTimeStamp';
+
+interface Props {
+  lastTime: number;
+};
 
 interface State {
-  time: number;
-  timeList: string[];
+    time: number;
+    outputTime: JSX.Element;
 }
-
-interface Props {};
 
 class Stopwatch extends Component<Props, State> {
   private timerId: NodeJS.Timeout | undefined;
@@ -15,68 +15,34 @@ class Stopwatch extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      time: 0,
-      timeList: [],
-    };
+        time : Date.now(),
+        outputTime: <></>
+    }
   }
 
   componentDidMount() {
+    this.timerId = setInterval(() => { this.convertText(Date.now() - this.state.time + this.props.lastTime) }, 10);
   }
 
   componentWillUnmount() {
-
-  }
-
-  startTimer = () => {
-    // 사용자가 start 버튼을 연속으로 2회 이상 눌렀을 경우 이전 타이머를 해제해준다.
     if (this.timerId) {
-      clearInterval(this.timerId);
+        clearInterval(this.timerId);
     }
-
-    this.timerId = setInterval(() => {
-      const timer = this.state.time + 0.1;
-      this.setState({
-        time: timer,
-      });
-    }, 100);
   }
 
-  stopTimer = () => {
-    if (this.timerId) {
-      clearInterval(this.timerId);
-      this.timerId = undefined;
-    }
-
-    const { hour, minute, second } = this.convertText(this.state.time);
-    const newTimeList = [...this.state.timeList, `${hour}hr ${minute}min ${second}sec`];
-    this.setState({ timeList: newTimeList });
-  }
-
-  resetTimer = () => {
-    // 타이머가 진행 중인 경우 해제해주기
-    if (this.timerId !== undefined) { 
-      clearInterval(this.timerId);
-      this.timerId = undefined;
-    }
-
+  convertText = (time : number) => {
+    const minute : string = Math.floor((time / (1000 * 60)) % 60).toString();
+    const second: string = Math.floor((time / 1000) % 60).toString();
+    const millisecond : string = Math.floor((time % 1000) * 0.1).toString();
     this.setState({
-      time: 0,
-      timeList: []
+        outputTime : <table className="timer"><td className="td-number">{minute}</td> <td className="td-string">min</td> <td className="td-number">{second}</td> <td className="td-string">sec</td> <td className="td-number">{millisecond}</td> <td className="td-string">ms</td></table>
     });
   }
-
-  convertText = (timer : number) => {
-    const hour : string = Math.floor(timer / 360).toString();
-    const minute : string = Math.floor((timer % 360) / 60).toString();
-    const second: string = ((timer % 360) % 60).toString();
-    return { hour, minute, second };
-  }
-
+  
   render() {
-    const { hour, minute, second } = this.convertText(this.state.time);
     return (
       <div>
-        <h3 id="timer">{hour} hr {minute} min {second}sec</h3>
+        {this.state.outputTime}
       </div>
     );
   }

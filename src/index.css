@@ -59,3 +59,20 @@ body {
     flex-direction: column;
     align-items: center;
 }
+
+.td-number {
+    height: 42px;
+    width: 35px;
+    text-align: right;
+}
+
+.td-string {
+    height: 42px;
+    width: 55px;
+    text-align: left;
+}
+
+#timer-box {
+    height: 50px;
+    width: 300px;
+}
