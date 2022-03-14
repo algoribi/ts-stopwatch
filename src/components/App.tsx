@@ -8,7 +8,11 @@ interface Props {
 interface State {
     timeStampList : string[];
     toggleButton: boolean;
-    timerText: JSX.Element;
+    timer : {
+        minute : string;
+        second : string;
+        millisecond : string;
+    }
 }
 
 class App extends Component<Props, State> {
@@ -20,7 +24,11 @@ class App extends Component<Props, State> {
         this.state = {
             timeStampList : [],
             toggleButton: false,
-            timerText: <table className="timer"><td className="td-number">0</td> <td className="td-string">min</td> <td className="td-number">0</td> <td className="td-string">sec</td> <td className="td-number">0</td> <td className="td-string">ms</td></table>
+            timer : {
+                minute : "0",
+                second : "0",
+                millisecond : "0"
+            }
         }
     }
 
@@ -28,10 +36,18 @@ class App extends Component<Props, State> {
         if (this.state.toggleButton) {
             const { minute, second, millisecond } = this.convertText(Date.now() - this.startTime + this.rememberTime);
             const newTimeStampList = [...this.state.timeStampList, `${minute}min ${second}sec ${millisecond}ms`];
-            this.setState({ timeStampList: newTimeStampList, toggleButton: false, timerText: <table className="timer"><td className="td-number">{minute}</td> <td className="td-string">min</td> <td className="td-number">{second}</td> <td className="td-string">sec</td> <td className="td-number">{millisecond}</td> <td className="td-string">ms</td></table> });
+            this.setState({
+                timeStampList: newTimeStampList,
+                toggleButton: false,
+                timer : {
+                    minute : minute,
+                    second : second,
+                    millisecond : millisecond
+                }
+            });
         } else {
             this.startTime = Date.now();
-            this.setState({ toggleButton: true, timerText: <Stopwatch lastTime={this.rememberTime}/> });
+            this.setState({ toggleButton: true});
         }
     }
 
@@ -51,7 +67,11 @@ class App extends Component<Props, State> {
         this.setState({
             timeStampList : [],
             toggleButton: false,
-            timerText: <table className="timer"><td className="td-number">0</td> <td className="td-string">min</td> <td className="td-number">0</td> <td className="td-string">sec</td> <td className="td-number">0</td> <td className="td-string">ms</td></table>
+            timer : {
+                minute : "0",
+                second : "0",
+                millisecond : "0"
+            }
         });
     }
 
@@ -59,13 +79,31 @@ class App extends Component<Props, State> {
         return (
             <div id="App">
                 <h1 id="title_name">⏱MY STOPWATCH</h1>
-                <div id="timer-box">{this.state.timerText}</div>
+                <div id="timer-box">
+                    { this.state.toggleButton
+                        ? <Stopwatch lastTime={this.rememberTime}/> 
+                        : <table className="timer">
+                            <tbody>
+                                <tr>
+                                    <td className="td-number">{this.state.timer.minute}</td>
+                                    <td className="td-string">min</td>
+                                    <td className="td-number">{this.state.timer.second}</td>
+                                    <td className="td-string">sec</td>
+                                    <td className="td-number">{this.state.timer.millisecond}</td>
+                                    <td className="td-string">ms</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                </div>
                 <div id="div-button">
                     <button className="button" id={this.state.toggleButton ? "stop" : "start"} onClick={this.toggleButton}></button>
                     <button className="button" onClick={this.resetButton}>Reset</button>
-                    {this.state.timeStampList.map(item => (
-                        <PrintTimeStamp text={item} key={item} />
-                    ))}
+                    <div>
+                        {this.state.timeStampList.map(item => (
+                            <PrintTimeStamp text={item} key={item} />
+                        ))}
+                    </div>
                 </div>
             </div>
         );

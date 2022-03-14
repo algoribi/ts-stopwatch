@@ -6,7 +6,11 @@ interface Props {
 
 interface State {
     time: number;
-    outputTime: JSX.Element;
+    timer : {
+      minute : string;
+      second : string;
+      millisecond : string;
+  }
 }
 
 class Stopwatch extends Component<Props, State> {
@@ -16,7 +20,11 @@ class Stopwatch extends Component<Props, State> {
     super(props);
     this.state = {
         time : Date.now(),
-        outputTime: <></>
+        timer : {
+          minute : "0",
+          second : "0",
+          millisecond : "0"
+      }
     }
   }
 
@@ -35,15 +43,28 @@ class Stopwatch extends Component<Props, State> {
     const second: string = Math.floor((time / 1000) % 60).toString();
     const millisecond : string = Math.floor((time % 1000) * 0.1).toString();
     this.setState({
-        outputTime : <table className="timer"><td className="td-number">{minute}</td> <td className="td-string">min</td> <td className="td-number">{second}</td> <td className="td-string">sec</td> <td className="td-number">{millisecond}</td> <td className="td-string">ms</td></table>
+        timer : {
+          minute : minute,
+          second : second,
+          millisecond : millisecond
+      }
     });
   }
   
   render() {
     return (
-      <div>
-        {this.state.outputTime}
-      </div>
+      <table className="timer">
+        <tbody>
+          <tr>
+            <td className="td-number">{this.state.timer.minute}</td>
+            <td className="td-string">min</td>
+            <td className="td-number">{this.state.timer.second}</td>
+            <td className="td-string">sec</td>
+            <td className="td-number">{this.state.timer.millisecond}</td>
+            <td className="td-string">ms</td>
+          </tr>
+        </tbody>
+      </table>
     );
   }
 }
